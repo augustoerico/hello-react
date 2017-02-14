@@ -3,6 +3,7 @@ var Greeter = React.createClass({
     return (
       <div>
         <h1>Hello, React from component!</h1>
+        <p>This is from the component</p>
       </div>
     );
   }

@@ -1,3 +1,40 @@
+var GreeterMessage = React.createClass({
+  render: function () {
+    var name = this.props.name;
+    var message = this.props.message;
+    return (
+      <div>
+        <h1>Hello, {name}!</h1>
+        <p>{message}</p>
+      </div>
+    )
+  }
+});
+
+var GreeterForm = React.createClass({
+  handleSubmit: function (e) {
+    e.preventDefault();
+    var nameRef = this.refs.name;
+    var messageRef = this.refs.message;
+    var update = {
+      name: nameRef.value,
+      message: messageRef.value
+    };
+    nameRef.value = '';
+    messageRef.value = '';
+    this.props.handleSubmit(update)
+  },
+  render: function () {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <input type="text" ref="name" placeholder="Name"/>
+        <input type="textarea" ref="message" placeholder="Text" />
+        <button type="submit">Update</button>
+      </form>
+    )
+  }
+});
+
 var Greeter = React.createClass({
   getDefaultProps: function() {
     return {
@@ -7,41 +44,29 @@ var Greeter = React.createClass({
   },
   getInitialState: function () {
     return {
-      name: this.props.name
+      name: this.props.name,
+      message: this.props.message
     };
   },
-  onButtonClick: function (e) {
-    e.preventDefault();
-
-    var nameRef = this.refs.name;
-    var name = nameRef.value;
-
-    if (typeof name === 'string' && name.length > 0) {
-      nameRef.value = '';
-      this.setState({
-        name: name
-      });
-    }
+  updateState: function (update) {
+    this.setState({
+      name: update.name ? update.name : this.state.name,
+      message: update.message ? update.message : this.state.message
+    });
   },
   render: function() {
     var name = this.state.name;
-    var message = this.props.message;
+    var message = this.state.message;
     return (
       <div>
-        <h1>Hello, {name} from component!</h1>
-        <p>{message}</p>
-        <form onSubmit={this.onButtonClick}>
-          <input type="text" ref="name" />
-          <button>Set name</button>
-        </form>
+        <GreeterMessage name={name} message={message}/>
+        <GreeterForm handleSubmit={this.updateState}/>
       </div>
     );
   }
 });
 
-var firstName = 'Erico';
-var message = 'Hey, this is from a component!'
 ReactDOM.render(
-  <Greeter name={firstName} message={message}/>,
+  <Greeter />,
   document.getElementById('app')
 );
